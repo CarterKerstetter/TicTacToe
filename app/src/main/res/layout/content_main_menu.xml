@@ -17,4 +17,29 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/start_screen" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="386dp"
+        android:layout_height="44dp"
+        android:switchMinWidth="300dp"
+        android:text="Difficulty"
+        android:trackTint="@color/colorAccent"
+        tools:layout_editor_absoluteX="12dp"
+        tools:layout_editor_absoluteY="351dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="291dp"
+        android:layout_height="94dp"
+        android:text="Play!"
+        tools:layout_editor_absoluteX="60dp"
+        tools:layout_editor_absoluteY="445dp" />
+
+
 </android.support.constraint.ConstraintLayout>
