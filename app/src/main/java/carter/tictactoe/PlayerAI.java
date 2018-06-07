@@ -50,7 +50,7 @@ public class PlayerAI {
                     nextMove = loseMove(board, mark);
                 }
                  **/
-                game.makeMove(mark,nextMove);
+                game.makeMove(new Move(nextMove, mark));
                 break;
         }
         //game.makeMove(mark,nextMove);

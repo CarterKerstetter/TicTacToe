@@ -15,6 +15,10 @@ public class TicTacToeModel {
         //this.playerAI = playerAI;
     }
 
+    public void setBoard(Mark[][] board) {
+        this.board = board;
+    }
+
     public void newGame() {
         for(int row=0;row<BOARD_SIZE;row++) {
             for(int col=0;col<BOARD_SIZE;col++) {
@@ -25,15 +29,19 @@ public class TicTacToeModel {
     }
 
     //may want to return void and use notifyAll if there is 2 player
-    public synchronized void makeMove(Mark mark, Coordinates coordinates) {
+    public synchronized void makeMove(Move move) {
+        Mark mark = move.getMark();
+        Coordinates coordinates = move.getCoordinates();
         if(mark==turn) {
             int row = coordinates.getRow();
             int col = coordinates.getCol();
-            board[row][col] = mark;
-            swapTurns();
-            notifyAll();
-            //player.updateBoard();
-            //playerAI.updateBoard();
+            if(board[row][col] == Mark.BLANK) {
+                board[row][col] = mark;
+                swapTurns();
+                notifyAll();
+                //player.updateBoard();
+                //playerAI.updateBoard();
+            }
         }
     }
 
