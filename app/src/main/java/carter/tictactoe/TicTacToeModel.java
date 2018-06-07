@@ -4,15 +4,15 @@ public class TicTacToeModel {
     private Mark[][] board;
     private Mark turn = Mark.X;
     public static int BOARD_SIZE = 3;
-    private Game player;
-    private PlayerAI playerAI;
+    //private Game player;
+    //private PlayerAI playerAI;
 
 
-    public TicTacToeModel(Game player, PlayerAI playerAI) {
+    public TicTacToeModel() {
         board = new Mark[BOARD_SIZE][BOARD_SIZE];
         newGame();
-        this.player = player;
-        this.playerAI = playerAI;
+        //this.player = player;
+        //this.playerAI = playerAI;
     }
 
     public void newGame() {
@@ -31,8 +31,9 @@ public class TicTacToeModel {
             int col = coordinates.getCol();
             board[row][col] = mark;
             swapTurns();
-            player.updateBoard();
-            playerAI.updateBoard();
+            notifyAll();
+            //player.updateBoard();
+            //playerAI.updateBoard();
         }
     }
 

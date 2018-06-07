@@ -2,7 +2,7 @@ package carter.tictactoe;
 
 import java.util.Random;
 
-public class PlayerAI implements Game {
+public class PlayerAI {
     Difficulty difficulty;
     Mark mark;
     TicTacToeModel game;
@@ -11,7 +11,18 @@ public class PlayerAI implements Game {
         this.difficulty = difficulty;
         this.mark = mark;
         this.game = game;
-        if(game.getTurn() == mark) {
+        play();
+    }
+
+    private void play() {
+        while(!game.gameCompleted()) {
+            while (game.getTurn() != mark) {
+                try {
+                    game.wait();
+                }
+                catch (InterruptedException e) {
+                }
+            }
             takeTurn();
         }
     }
@@ -30,11 +41,10 @@ public class PlayerAI implements Game {
                 break;
             case HARD:
                 nextMove = winMove(board, mark);
-                /**
                 if(nextMove.getRow() == -1) {
-                    //TODO
                     nextMove = tieMove(board, mark);
                 }
+                /**
                 //this should not happen
                 if(nextMove.getRow() == -1) {
                     nextMove = loseMove(board, mark);
@@ -43,6 +53,7 @@ public class PlayerAI implements Game {
                 game.makeMove(mark,nextMove);
                 break;
         }
+        //game.makeMove(mark,nextMove);
     }
 
     private Mark[][] cloneBoard(Mark[][] board) {
@@ -102,7 +113,10 @@ public class PlayerAI implements Game {
         if(winExists) {
             Random random = new Random();
             int check = random.nextInt()%9;
-            for(;wins[check]==false;check++) {
+            for(;!wins[check];check++) {
+                if(check >= 9) {
+                    check = 0;
+                }
             }
             return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
         }
@@ -137,10 +151,93 @@ public class PlayerAI implements Game {
         return true;
     }
 
+    private Coordinates tieMove(Mark[][] board, Mark mark) {
+        Mark[][] clone;
+        boolean tieExists = false;
+        boolean[] ties = new boolean[TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE];
+        for(int i=0;i<TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE;i++) {
+            ties[i] = false;
+        }
+        //for each possible move
+        for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col < TicTacToeModel.BOARD_SIZE;col++) {
+                //if a move can be made on a space
+                if(board[row][col] == Mark.BLANK) {
+                    clone = cloneBoard(board);
+                    clone[row][col] = mark;
+                    //if the game is complete and you tie, the move is a tie move
+                    if(game.gameCompleted(clone)) {
+                        if(game.getWinner(clone) == Mark.BLANK) {
+                            ties[row*TicTacToeModel.BOARD_SIZE+col] = true;
+                            tieExists = true;
+                        }
+                    }
+                    //if the enemy is forced into a tie, the move is a tie move
+                    else {
+                        if(willTie(board, oppositeMark(mark))) {
+                            ties[row*TicTacToeModel.BOARD_SIZE+col] = true;
+                            tieExists = true;
+                        }
+                    }
+                }
+            }
+        }
+        //randomize moves so the AI isn't the same every game.
+        if(tieExists) {
+            Random random = new Random();
+            int check = random.nextInt()%9;
+            for(;!ties[check];check++) {
+                if(check >= 9) {
+                    check = 0;
+                }
+            }
+            return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
+        }
+        else {
+            return new Coordinates(-1, -1);
+        }
+    }
+
+    private boolean willTie(Mark[][] board, Mark mark) {
+        Mark[][] clone;
+        boolean tieExists = false;
+        //for each move
+        for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col < TicTacToeModel.BOARD_SIZE;col++) {
+                //if the move is available
+                if(board[row][col] == Mark.BLANK) {
+                    clone = cloneBoard(board);
+                    clone[row][col] = mark;
+                    //if the game ends and you win, you did not tie
+                    if(game.gameCompleted(clone)) {
+                        if(game.getWinner(clone) == mark) {
+                            return false;
+                        }
+                        else if(game.getWinner(clone) == Mark.BLANK) {
+                            tieExists = true;
+                        }
+                    }
+                    //the game is not over, but the other player will lose, than you can make
+                    //a winning move
+                    else if(willLose(clone, oppositeMark(mark))) {
+                        return false;
+                    }
+                    //if the other play must tie, this is a tie move
+                    else if (willTie(clone, oppositeMark(mark))) {
+                        tieExists = true;
+                    }
+                }
+            }
+        }
+        return tieExists;
+    }
+
+    /**
     public void updateBoard() {
         if(game.getTurn() == mark &&
                 !game.gameCompleted()) {
             takeTurn();
         }
     }
+     **/
 }

@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class TicTacToeBoard extends AppCompatActivity implements Game{
+public class TicTacToeBoard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,7 @@ public class TicTacToeBoard extends AppCompatActivity implements Game{
                         .setAction("Action", null).show();
             }
         });
+
     }
 
     public void updateBoard() {
