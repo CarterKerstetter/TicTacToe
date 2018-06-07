@@ -8,14 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class AIGame extends AppCompatActivity {
+public class Game extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String difficulty = intent.getStringExtra("difficulty");
-        setContentView(R.layout.activity_aigame);
+        setContentView(R.layout.activity_game);
         this.setTitle("TicTacToe: " + difficulty);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
