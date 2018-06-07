@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -39,6 +40,18 @@ public class MainMenu extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(), AIGame.class);
+                SeekBar level = (SeekBar) findViewById(R.id.difficulty);
+                switch(level.getProgress()) {
+                    case 0:
+                        myIntent.putExtra("difficulty","Easy");
+                        break;
+                    case 1:
+                        myIntent.putExtra("difficulty","Medium");
+                        break;
+                    case 2:
+                        myIntent.putExtra("difficulty","Hard");
+                        break;
+                }
                 startActivityForResult(myIntent, 0);
             }
 

@@ -1,5 +1,6 @@
 package carter.tictactoe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,7 +13,10 @@ public class AIGame extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String difficulty = intent.getStringExtra("difficulty");
         setContentView(R.layout.activity_aigame);
+        this.setTitle("TicTacToe: " + difficulty);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
