@@ -246,4 +246,114 @@ public class TicTacToeModelTest {
         }
     }
 
+    @Test
+    public void game_completed_test() {
+        CuT = new TicTacToeModel();
+        board = new Mark[3][3];
+        for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col<TicTacToeModel.BOARD_SIZE;col++) {
+                board[row][col] = mark_blank;
+            }
+        }
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_top][col_left] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_top][col_middle] = mark_x;
+        board[row_top][col_right] = mark_x;
+        //x wins across top
+        CuT.setBoard(board);
+        assertEquals(true,CuT.gameCompleted());
+        board[row_top][col_left] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_middle][col_left] = mark_o;
+        board[row_bottom][col_left] = mark_o;
+        //o wins across left side
+        CuT.setBoard(board);
+        CuT.setBoard(board);
+        assertEquals(true,CuT.gameCompleted());
+        board[row_bottom][col_left] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_middle][col_middle] = mark_x;
+        //x wins diagonal
+        CuT.setBoard(board);
+        assertEquals(true,CuT.gameCompleted());
+        board[row_middle][col_middle] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_bottom][col_right] = mark_o;
+        //o wins diagonal
+        CuT.setBoard(board);
+        assertEquals(true,CuT.gameCompleted());
+        board[row_bottom][col_right] = mark_x;
+        board[row_bottom][col_middle] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_top][col_right] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(false,CuT.gameCompleted());
+        board[row_middle][col_right] = mark_x;
+        //board filled tie game
+        CuT.setBoard(board);
+        assertEquals(true,CuT.gameCompleted());
+    }
+
+    @Test
+    public void get_winner_test() {
+        CuT = new TicTacToeModel();
+        board = new Mark[3][3];
+        for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col<TicTacToeModel.BOARD_SIZE;col++) {
+                board[row][col] = mark_blank;
+            }
+        }
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_top][col_left] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_top][col_middle] = mark_o;
+        board[row_top][col_right] = mark_o;
+        //o wins across top
+        CuT.setBoard(board);
+        assertEquals(mark_o,CuT.getWinner());
+        board[row_top][col_left] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_middle][col_left] = mark_x;
+        board[row_bottom][col_left] = mark_x;
+        //x wins across left side
+        CuT.setBoard(board);
+        CuT.setBoard(board);
+        assertEquals(mark_x,CuT.getWinner());
+        board[row_bottom][col_left] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_middle][col_middle] = mark_o;
+        //o wins diagonal
+        CuT.setBoard(board);
+        assertEquals(mark_o,CuT.getWinner());
+        board[row_middle][col_middle] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_bottom][col_right] = mark_x;
+        //x wins diagonal
+        CuT.setBoard(board);
+        assertEquals(mark_x,CuT.getWinner());
+        board[row_bottom][col_right] = mark_o;
+        board[row_bottom][col_middle] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_top][col_right] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+        board[row_middle][col_right] = mark_o;
+        //board filled tie game
+        CuT.setBoard(board);
+        assertEquals(mark_blank,CuT.getWinner());
+    }
+
 }

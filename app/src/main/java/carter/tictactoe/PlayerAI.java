@@ -6,6 +6,7 @@ public class PlayerAI {
     Difficulty difficulty;
     Mark mark;
     TicTacToeModel game;
+    TicTacToeModel testGame = new TicTacToeModel();
 
     public void playerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
         this.difficulty = difficulty;
@@ -92,9 +93,10 @@ public class PlayerAI {
                 if(board[row][col] == Mark.BLANK) {
                     clone = cloneBoard(board);
                     clone[row][col] = mark;
+                    testGame.setBoard(clone);
                     //if the game is complete and you win, the move is a winning move
-                    if(game.gameCompleted(clone)) {
-                        if(game.getWinner(clone) == mark) {
+                    if(game.gameCompleted()) {
+                        if(game.getWinner() == mark) {
                             wins[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             winExists = true;
                         }
@@ -134,9 +136,10 @@ public class PlayerAI {
                 if(board[row][col] == Mark.BLANK) {
                     clone = cloneBoard(board);
                     clone[row][col] = mark;
+                    testGame.setBoard(clone);
                     //if the game ends and the other play doesn't win, you did not lose
-                    if(game.gameCompleted(clone)) {
-                        if(game.getWinner(clone) != oppositeMark(mark)) {
+                    if(game.gameCompleted()) {
+                        if(game.getWinner() != oppositeMark(mark)) {
                             return false;
                         }
                     }
@@ -165,9 +168,10 @@ public class PlayerAI {
                 if(board[row][col] == Mark.BLANK) {
                     clone = cloneBoard(board);
                     clone[row][col] = mark;
+                    testGame.setBoard(clone);
                     //if the game is complete and you tie, the move is a tie move
-                    if(game.gameCompleted(clone)) {
-                        if(game.getWinner(clone) == Mark.BLANK) {
+                    if(game.gameCompleted()) {
+                        if(game.getWinner() == Mark.BLANK) {
                             ties[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             tieExists = true;
                         }
@@ -208,12 +212,13 @@ public class PlayerAI {
                 if(board[row][col] == Mark.BLANK) {
                     clone = cloneBoard(board);
                     clone[row][col] = mark;
+                    testGame.setBoard(clone);
                     //if the game ends and you win, you did not tie
-                    if(game.gameCompleted(clone)) {
-                        if(game.getWinner(clone) == mark) {
+                    if(game.gameCompleted()) {
+                        if(game.getWinner() == mark) {
                             return false;
                         }
-                        else if(game.getWinner(clone) == Mark.BLANK) {
+                        else if(game.getWinner() == Mark.BLANK) {
                             tieExists = true;
                         }
                     }
