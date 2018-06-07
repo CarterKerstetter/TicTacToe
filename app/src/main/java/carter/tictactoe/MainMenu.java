@@ -1,5 +1,6 @@
 package carter.tictactoe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -25,6 +27,21 @@ public class MainMenu extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
+        });
+        /**final Button button = findViewById(R.id.start);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(R.layout.game);
+            }
+        });
+         **/
+        Button next = (Button) findViewById(R.id.start);
+        next.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), AIGame.class);
+                startActivityForResult(myIntent, 0);
+            }
+
         });
     }
 
