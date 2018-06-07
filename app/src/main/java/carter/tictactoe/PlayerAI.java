@@ -2,26 +2,29 @@ package carter.tictactoe;
 
 import java.util.Random;
 
-public class PlayerAI {
-    Difficulty difficulty;
-    Mark mark;
-    TicTacToeModel game;
-    TicTacToeModel testGame = new TicTacToeModel();
+public class PlayerAI implements Runnable{
+    private Difficulty difficulty;
+    private Mark mark;
+    private final TicTacToeModel game;
+    private TicTacToeModel testGame = new TicTacToeModel();
 
-    public void playerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
+    public PlayerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
         this.difficulty = difficulty;
         this.mark = mark;
         this.game = game;
-        play();
     }
 
-    private void play() {
+    @Override
+    public void run() {
         while(!game.gameCompleted()) {
             while (game.getTurn() != mark) {
-                try {
-                    game.wait();
-                }
-                catch (InterruptedException e) {
+                synchronized (game) {
+                    try {
+                        game.wait();
+                    }
+                    catch(InterruptedException e) {
+                        System.out.println(e);
+                    }
                 }
             }
             takeTurn();
@@ -45,12 +48,10 @@ public class PlayerAI {
                 if(nextMove.getRow() == -1) {
                     nextMove = tieMove(board, mark);
                 }
-                /**
-                //this should not happen
-                if(nextMove.getRow() == -1) {
-                    nextMove = loseMove(board, mark);
-                }
-                 **/
+                //the hard AI doesnt need to check for losing moves
+
+                //System.out.println("coords:");
+                //System.out.println(nextMove.getRow() + ", " + nextMove.getCol());
                 game.makeMove(new Move(nextMove, mark));
                 break;
         }
@@ -95,15 +96,15 @@ public class PlayerAI {
                     clone[row][col] = mark;
                     testGame.setBoard(clone);
                     //if the game is complete and you win, the move is a winning move
-                    if(game.gameCompleted()) {
-                        if(game.getWinner() == mark) {
+                    if(testGame.gameCompleted()) {
+                        if(testGame.getWinner() == mark) {
                             wins[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             winExists = true;
                         }
                     }
                     //if the enemy is forced into a loss, the move is a winning move
                     else {
-                        if(willLose(board, oppositeMark(mark))) {
+                        if(willLose(clone, oppositeMark(mark))) {
                             wins[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             winExists = true;
                         }
@@ -114,10 +115,10 @@ public class PlayerAI {
         //randomize moves so the AI isn't the same every game.
         if(winExists) {
             Random random = new Random();
-            int check = random.nextInt()%9;
+            int check = Math.abs(random.nextInt())%9;
             for(;!wins[check];check++) {
-                if(check >= 9) {
-                    check = 0;
+                if(check >= 8) {
+                    check = -1;
                 }
             }
             return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
@@ -138,8 +139,8 @@ public class PlayerAI {
                     clone[row][col] = mark;
                     testGame.setBoard(clone);
                     //if the game ends and the other play doesn't win, you did not lose
-                    if(game.gameCompleted()) {
-                        if(game.getWinner() != oppositeMark(mark)) {
+                    if(testGame.gameCompleted()) {
+                        if(testGame.getWinner() != oppositeMark(mark)) {
                             return false;
                         }
                     }
@@ -170,15 +171,15 @@ public class PlayerAI {
                     clone[row][col] = mark;
                     testGame.setBoard(clone);
                     //if the game is complete and you tie, the move is a tie move
-                    if(game.gameCompleted()) {
-                        if(game.getWinner() == Mark.BLANK) {
+                    if(testGame.gameCompleted()) {
+                        if(testGame.getWinner() == Mark.BLANK) {
                             ties[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             tieExists = true;
                         }
                     }
                     //if the enemy is forced into a tie, the move is a tie move
                     else {
-                        if(willTie(board, oppositeMark(mark))) {
+                        if(willTie(clone, oppositeMark(mark))) {
                             ties[row*TicTacToeModel.BOARD_SIZE+col] = true;
                             tieExists = true;
                         }
@@ -189,10 +190,10 @@ public class PlayerAI {
         //randomize moves so the AI isn't the same every game.
         if(tieExists) {
             Random random = new Random();
-            int check = random.nextInt()%9;
+            int check = Math.abs(random.nextInt())%9;
             for(;!ties[check];check++) {
-                if(check >= 9) {
-                    check = 0;
+                if(check >= 8) {
+                    check = -1;
                 }
             }
             return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
@@ -214,11 +215,11 @@ public class PlayerAI {
                     clone[row][col] = mark;
                     testGame.setBoard(clone);
                     //if the game ends and you win, you did not tie
-                    if(game.gameCompleted()) {
-                        if(game.getWinner() == mark) {
+                    if(testGame.gameCompleted()) {
+                        if(testGame.getWinner() == mark) {
                             return false;
                         }
-                        else if(game.getWinner() == Mark.BLANK) {
+                        else if(testGame.getWinner() == Mark.BLANK) {
                             tieExists = true;
                         }
                     }
@@ -237,12 +238,5 @@ public class PlayerAI {
         return tieExists;
     }
 
-    /**
-    public void updateBoard() {
-        if(game.getTurn() == mark &&
-                !game.gameCompleted()) {
-            takeTurn();
-        }
-    }
-     **/
+
 }
