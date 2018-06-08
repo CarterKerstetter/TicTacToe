@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -196,6 +197,19 @@ public class Game extends AppCompatActivity implements Runnable{
             }
         }
         if(game.gameCompleted()) {
+            Mark winner = game.getWinner();
+            if(winner==mark) {
+                Toast.makeText(getApplicationContext(), "You win!",
+                        Toast.LENGTH_LONG).show();
+            }
+            else if(winner==Mark.BLANK) {
+                Toast.makeText(getApplicationContext(), "It is a tie!",
+                        Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "You lost!",
+                        Toast.LENGTH_LONG).show();
+            }
             b_new_game.setVisibility(View.VISIBLE);
         }
     }
