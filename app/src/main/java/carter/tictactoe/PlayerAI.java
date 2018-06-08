@@ -1,5 +1,7 @@
 package carter.tictactoe;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class PlayerAI implements Runnable{
