@@ -16,10 +16,13 @@ import java.util.Random;
 
 public class Game extends AppCompatActivity implements Runnable{
     TicTacToeModel game;
+    Thread otherPlayer;
+    PlayerAI ai;
     Mark mark;
     int i;
     TextView o_notification;
     TextView x_notification;
+    String difficulty;
 
     ImageView[] x_list;
     ImageView x_0;
@@ -54,18 +57,20 @@ public class Game extends AppCompatActivity implements Runnable{
     Button b_7;
     Button b_8;
 
+    Button b_new_game;
+    Button b_main_menu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String difficulty = intent.getStringExtra("difficulty");
+        difficulty = intent.getStringExtra("difficulty");
         setContentView(R.layout.activity_game);
         this.setTitle("TicTacToe: " + difficulty);
-
+        setUpImageViews();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,20 +79,38 @@ public class Game extends AppCompatActivity implements Runnable{
                         .setAction("Action", null).show();
             }
         });
-        Random random = new Random();
-        int startMark = Math.abs(random.nextInt())%2;
-        o_notification = (TextView) findViewById(R.id.o_notification);
-        x_notification = (TextView) findViewById(R.id.x_notification);
-        if(startMark == 0) {
-            mark = Mark.X;
-            x_notification.setVisibility(View.VISIBLE);
-        }
-        else {
+        mark = Mark.BLANK;
+        game = new TicTacToeModel();
+        startNewGame();
+    }
+
+    private void startNewGame() {
+        if(mark == Mark.X) {
             mark = Mark.O;
             o_notification.setVisibility(View.VISIBLE);
+            x_notification.setVisibility(View.INVISIBLE);
         }
-        game = new TicTacToeModel();
-        PlayerAI ai;
+        else if (mark == Mark.O){
+            mark = Mark.X;
+            x_notification.setVisibility(View.VISIBLE);
+            o_notification.setVisibility(View.INVISIBLE);
+        }
+        else {
+            Random random = new Random();
+            int startMark = Math.abs(random.nextInt())%2;
+            o_notification = (TextView) findViewById(R.id.o_notification);
+            x_notification = (TextView) findViewById(R.id.x_notification);
+            if(startMark == 0) {
+                mark = Mark.X;
+                x_notification.setVisibility(View.VISIBLE);
+                o_notification.setVisibility(View.INVISIBLE);
+            }
+            else {
+                mark = Mark.O;
+                o_notification.setVisibility(View.VISIBLE);
+                x_notification.setVisibility(View.INVISIBLE);
+            }
+        }
         switch (difficulty) {
             case "Easy":
                 if(mark == Mark.X) {
@@ -121,14 +144,16 @@ public class Game extends AppCompatActivity implements Runnable{
                     ai = new PlayerAI(Difficulty.MEDIUM, Mark.X, game);
                 }
         }
+        game.newGame();
         Thread thisPlayer = new Thread(this);
         thisPlayer.start();
-        Thread otherPlayer = new Thread(ai);
+        otherPlayer = new Thread(ai);
         otherPlayer.start();
+        updateBoard();
+        b_new_game.setVisibility(View.INVISIBLE);
     }
 
     public void run() {
-        setUpImageViews();
         while(!game.gameCompleted()) {
             synchronized (game) {
                 try {
@@ -155,17 +180,23 @@ public class Game extends AppCompatActivity implements Runnable{
                     case X:
                         x_list[row*3+col].setVisibility(View.VISIBLE);
                         o_list[row*3+col].setVisibility(View.INVISIBLE);
+                        x_list[row*3+col].setClickable(false);
                         break;
                     case O:
                         x_list[row*3+col].setVisibility(View.INVISIBLE);
                         o_list[row*3+col].setVisibility(View.VISIBLE);
+                        x_list[row*3+col].setClickable(false);
                         break;
                     case BLANK:
                         x_list[row*3+col].setVisibility(View.INVISIBLE);
                         o_list[row*3+col].setVisibility(View.INVISIBLE);
+                        x_list[row*3+col].setClickable(true);
                         break;
                 }
             }
+        }
+        if(game.gameCompleted()) {
+            b_new_game.setVisibility(View.VISIBLE);
         }
     }
 
@@ -229,6 +260,9 @@ public class Game extends AppCompatActivity implements Runnable{
         o_list[6] = o_6;
         o_list[7] = o_7;
         o_list[8] = o_8;
+
+        b_main_menu = (Button) findViewById(R.id.b_main_menu);
+        b_new_game = (Button) findViewById(R.id.b_new_game);
 
         b_0.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -309,6 +343,21 @@ public class Game extends AppCompatActivity implements Runnable{
                 Coordinates coordinates = new Coordinates(row, col);
                 Move move = new Move(coordinates,mark);
                 game.makeMove(move);
+            }
+        });
+        b_main_menu.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                ai.stopRunning();
+                if(otherPlayer.getState()== Thread.State.WAITING) {
+                    game.notifyAll();
+                }
+                Intent myIntent = new Intent(view.getContext(), MainMenu.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+        b_new_game.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startNewGame();
             }
         });
     }

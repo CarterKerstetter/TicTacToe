@@ -9,6 +9,7 @@ public class PlayerAI implements Runnable{
     private Mark mark;
     private final TicTacToeModel game;
     private TicTacToeModel testGame = new TicTacToeModel();
+    private volatile boolean exit = false;
 
     public PlayerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
         this.difficulty = difficulty;
@@ -18,8 +19,8 @@ public class PlayerAI implements Runnable{
 
     @Override
     public void run() {
-        while(!game.gameCompleted()) {
-            while (game.getTurn() != mark) {
+        while(!exit && !game.gameCompleted()) {
+            while (!exit && game.getTurn() != mark) {
                 synchronized (game) {
                     try {
                         game.wait();
@@ -29,8 +30,14 @@ public class PlayerAI implements Runnable{
                     }
                 }
             }
-            takeTurn();
+            if(!exit) {
+                takeTurn();
+            }
         }
+    }
+
+    public void stopRunning() {
+        exit = true;
     }
 
     private void takeTurn() {

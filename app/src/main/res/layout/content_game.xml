@@ -348,8 +348,8 @@
     <Button
         android:id="@+id/b_2"
         android:layout_width="114dp"
-        android:background="@android:color/transparent"
         android:layout_height="119dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/horizontal1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/vertical1"
@@ -384,8 +384,8 @@
     <Button
         android:id="@+id/b_5"
         android:layout_width="114dp"
-        android:background="@android:color/transparent"
         android:layout_height="119dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/horizontal2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/vertical1"
@@ -396,13 +396,13 @@
     <Button
         android:id="@+id/b_6"
         android:layout_width="114dp"
-        android:background="@android:color/transparent"
         android:layout_height="119dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vertical2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/horizontal2"
-        app:layout_constraintVertical_bias="0.06"/>
+        app:layout_constraintVertical_bias="0.06" />
 
     <Button
         android:id="@+id/b_7"
@@ -414,7 +414,7 @@
         app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toEndOf="@+id/vertical2"
         app:layout_constraintTop_toBottomOf="@id/horizontal2"
-        app:layout_constraintVertical_bias="0.06"/>
+        app:layout_constraintVertical_bias="0.06" />
 
     <Button
         android:id="@+id/b_8"
@@ -425,7 +425,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/vertical1"
         app:layout_constraintTop_toBottomOf="@id/horizontal2"
-        app:layout_constraintVertical_bias="0.06"/>
+        app:layout_constraintVertical_bias="0.06" />
+
+    <Button
+        android:id="@+id/b_new_game"
+        android:layout_width="215dp"
+        android:layout_height="114dp"
+        android:text="New Game"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/b_main_menu"
+        app:layout_constraintTop_toBottomOf="@id/x_notification"
+        tools:layout_editor_absoluteX="196dp"
+        tools:layout_editor_absoluteY="488dp" />
+
+    <Button
+        android:id="@+id/b_main_menu"
+        android:layout_width="192dp"
+        android:layout_height="112dp"
+        android:text="Main Menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/b_new_game"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/x_notification"
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="488dp" />
 
 
 </android.support.constraint.ConstraintLayout>

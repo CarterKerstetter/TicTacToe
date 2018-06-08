@@ -4,28 +4,31 @@ public class TicTacToeModel {
     private Mark[][] board;
     private Mark turn = Mark.X;
     public static int BOARD_SIZE = 3;
-    //private Game player;
-    //private PlayerAI playerAI;
 
 
     public TicTacToeModel() {
         board = new Mark[BOARD_SIZE][BOARD_SIZE];
-        newGame();
+        gameSetup();
         //this.player = player;
         //this.playerAI = playerAI;
     }
 
-    public void setBoard(Mark[][] board) {
+    public synchronized void setBoard(Mark[][] board) {
         this.board = board;
     }
 
-    public void newGame() {
+    private synchronized void gameSetup() {
         for(int row=0;row<BOARD_SIZE;row++) {
             for(int col=0;col<BOARD_SIZE;col++) {
                 board[row][col] = Mark.BLANK;
             }
         }
         turn = Mark.X;
+    }
+
+    public synchronized void newGame() {
+        gameSetup();
+        notifyAll();
     }
 
     //may want to return void and use notifyAll if there is 2 player
@@ -41,15 +44,13 @@ public class TicTacToeModel {
                     swapTurns();
                     notifyAll();
                     return true;
-                    //player.updateBoard();
-                    //playerAI.updateBoard();
                 }
             }
         }
         return false;
     }
 
-    private void swapTurns() {
+    private synchronized void swapTurns() {
         if(turn == Mark.X) {
             turn = Mark.O;
         }
@@ -58,19 +59,19 @@ public class TicTacToeModel {
         }
     }
 
-    public Mark[][] getBoard() {
+    public synchronized Mark[][] getBoard() {
         return board;
     }
 
-    public Mark getTurn() {
+    public synchronized Mark getTurn() {
         return turn;
     }
 
-    public boolean gameCompleted() {
-        if(getWinner()==Mark.BLANK) {
+    public synchronized boolean gameCompleted() {
+        if (getWinner() == Mark.BLANK) {
             for (int row = 0; row < BOARD_SIZE; row++) {
                 for (int col = 0; col < BOARD_SIZE; col++) {
-                    if(board[row][col] == Mark.BLANK) {
+                    if (board[row][col] == Mark.BLANK) {
                         return false;
                     }
                 }
@@ -80,7 +81,7 @@ public class TicTacToeModel {
     }
 
 
-    public Mark getWinner() {
+    public synchronized Mark getWinner() {
         //check for wins across a row
         for(int row = 0;row<BOARD_SIZE;row++) {
             if(board[row][0] == board[row][1] &&
