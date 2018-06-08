@@ -61,6 +61,11 @@ public class Game extends AppCompatActivity implements Runnable{
     Button b_new_game;
     Button b_main_menu;
 
+    View h_1;
+    View h_2;
+    View v_1;
+    View v_2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,16 @@ public class Game extends AppCompatActivity implements Runnable{
         difficulty = intent.getStringExtra("difficulty");
         setContentView(R.layout.activity_game);
         this.setTitle("TicTacToe: " + difficulty);
+        h_1 = (View) findViewById(R.id.horizontal1);
+        h_2 = (View) findViewById(R.id.horizontal2);
+        v_1 = (View) findViewById(R.id.vertical1);;
+        v_2 = (View) findViewById(R.id.vertical2);
+        h_1.bringToFront();
+        h_2.bringToFront();
+        v_1.bringToFront();
+        v_2.bringToFront();
         setUpImageViews();
+        /**
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -80,6 +94,7 @@ public class Game extends AppCompatActivity implements Runnable{
                         .setAction("Action", null).show();
             }
         });
+         **/
         mark = Mark.BLANK;
         game = new TicTacToeModel();
         startNewGame();
@@ -363,7 +378,9 @@ public class Game extends AppCompatActivity implements Runnable{
             public void onClick(View view) {
                 ai.stopRunning();
                 if(otherPlayer.getState()== Thread.State.WAITING) {
-                    game.notifyAll();
+                    synchronized (game) {
+                        game.notifyAll();
+                    }
                 }
                 Intent myIntent = new Intent(view.getContext(), MainMenu.class);
                 startActivityForResult(myIntent, 0);

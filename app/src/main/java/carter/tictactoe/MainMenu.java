@@ -18,6 +18,7 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        /**
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,12 +28,6 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }
-        });
-        /**final Button button = findViewById(R.id.start);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setContentView(R.layout.game);
             }
         });
          **/

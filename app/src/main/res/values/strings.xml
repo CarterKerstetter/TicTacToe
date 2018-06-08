@@ -2,4 +2,6 @@
     <string name="app_name">TicTacToe</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_aigame">AIGame</string>
+    <string name="start">Play Game!</string>
+    <string name ="level">Difficulty:</string>
 </resources>
