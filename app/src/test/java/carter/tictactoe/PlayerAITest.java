@@ -43,26 +43,37 @@ public class PlayerAITest {
 
     }
      **/
-/**
+    /**
     @Test
     public void play_hard_test() {
-        //Mockito.when(game.gameCompleted()).thenReturn(false);
-        //Mockito.when(game.getTurn()).thenReturn(mark_x);
         game = new TicTacToeModel();
         CuT = new PlayerAI(hard,mark_o,game);
-        Mark[][] justTest = new Mark[3][3];
+        Mark[][] board = new Mark[3][3];
         for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
             for(int col = 0;col<TicTacToeModel.BOARD_SIZE;col++) {
-                justTest[row][col] = mark_blank;
+                board[row][col] = mark_blank;
             }
         }
-        justTest[0][2] = Mark.O;
-        justTest[1][1] = Mark.X;
-        //justTest[0][2] = Mark.O;
-        game.setBoard(justTest);
+        board[0][2] = Mark.O;
+        board[1][1] = Mark.X;
+        Mark[][] test_board = new Mark[3][3];
+        for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col<TicTacToeModel.BOARD_SIZE;col++) {
+                test_board[row][col] = mark_blank;
+            }
+        }
+        test_board[0][2] = Mark.O;
+        test_board[1][1] = Mark.X;
+        game.setBoard(board);
         Thread thread = new Thread(CuT);
         thread.start();
         game.makeMove(new Move(new Coordinates(2,2), mark_x));
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        }
+        catch(InterruptedException e) {
+
+        }
         try {
             TimeUnit.MINUTES.sleep(1);
         }
@@ -72,6 +83,6 @@ public class PlayerAITest {
         //Mockito.when(game.getTurn()).thenReturn(mark_o);
         //game.notifyAll();
     }
-**/
+    **/
 
 }

@@ -39,7 +39,7 @@ public class MainMenu extends AppCompatActivity {
         Button next = (Button) findViewById(R.id.start);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(), TicTacToeBoard.class);
+                Intent myIntent = new Intent(view.getContext(), Game.class);
                 SeekBar level = (SeekBar) findViewById(R.id.difficulty);
                 switch(level.getProgress()) {
                     case 0:

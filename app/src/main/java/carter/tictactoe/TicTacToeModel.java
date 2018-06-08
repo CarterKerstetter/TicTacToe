@@ -29,20 +29,24 @@ public class TicTacToeModel {
     }
 
     //may want to return void and use notifyAll if there is 2 player
-    public synchronized void makeMove(Move move) {
+    public synchronized boolean makeMove(Move move) {
         Mark mark = move.getMark();
         Coordinates coordinates = move.getCoordinates();
-        if(mark==turn) {
-            int row = coordinates.getRow();
-            int col = coordinates.getCol();
-            if(board[row][col] == Mark.BLANK) {
-                board[row][col] = mark;
-                swapTurns();
-                notifyAll();
-                //player.updateBoard();
-                //playerAI.updateBoard();
+        if(!gameCompleted()) {
+            if (mark == turn) {
+                int row = coordinates.getRow();
+                int col = coordinates.getCol();
+                if (board[row][col] == Mark.BLANK) {
+                    board[row][col] = mark;
+                    swapTurns();
+                    notifyAll();
+                    return true;
+                    //player.updateBoard();
+                    //playerAI.updateBoard();
+                }
             }
         }
+        return false;
     }
 
     private void swapTurns() {
