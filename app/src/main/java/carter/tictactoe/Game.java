@@ -6,6 +6,7 @@ package carter.tictactoe;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -66,6 +67,7 @@ public class Game extends AppCompatActivity implements Runnable{
     View v_1;
     View v_2;
 
+    MediaPlayer music;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,9 @@ public class Game extends AppCompatActivity implements Runnable{
         difficulty = intent.getStringExtra("difficulty");
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_game);
+        music= MediaPlayer.create(Game.this,R.raw.in_game_music);
+        music.setLooping(true);
+        music.start();
         //set up the title
         this.setTitle("TicTacToe: " + difficulty);
         h_1 = (View) findViewById(R.id.horizontal1);
@@ -157,6 +162,20 @@ public class Game extends AppCompatActivity implements Runnable{
         otherPlayer.start();
         updateBoard();
         b_new_game.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onPause() {
+        if (music.isPlaying()) {
+            music.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        music.start();
     }
 
     public void run() {
@@ -372,6 +391,7 @@ public class Game extends AppCompatActivity implements Runnable{
                         game.notifyAll();
                     }
                 }
+                //game.notifyAll();
                 Intent myIntent = new Intent(view.getContext(), MainMenu.class);
                 startActivityForResult(myIntent, 0);
             }

@@ -21,6 +21,7 @@ public class TicTacToeModel {
         this.board = board;
     }
 
+
     private synchronized void gameSetup() {
         for(int row=0;row<BOARD_SIZE;row++) {
             for(int col=0;col<BOARD_SIZE;col++) {

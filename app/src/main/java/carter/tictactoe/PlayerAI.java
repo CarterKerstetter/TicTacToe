@@ -1,7 +1,3 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
 
 import android.util.Log;
