@@ -83,18 +83,6 @@ public class Game extends AppCompatActivity implements Runnable{
         v_1.bringToFront();
         v_2.bringToFront();
         setUpImageViews();
-        /**
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-         **/
         mark = Mark.BLANK;
         game = new TicTacToeModel();
         startNewGame();

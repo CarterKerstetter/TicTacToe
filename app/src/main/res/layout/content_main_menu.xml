@@ -22,7 +22,7 @@
     <SeekBar
         android:id="@+id/difficulty"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="0dp"
+        android:layout_width="316dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:max="2"
@@ -39,9 +39,11 @@
         android:layout_marginBottom="7dp"
         android:layout_marginTop="348dp"
         android:text="@string/level"
+        android:gravity="center"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/difficulty"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

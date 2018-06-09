@@ -429,8 +429,6 @@
         android:layout_width="wrap_content"
         android:layout_height="5dp"
         android:layout_marginBottom="318dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
         android:background="@android:color/black"
         android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
