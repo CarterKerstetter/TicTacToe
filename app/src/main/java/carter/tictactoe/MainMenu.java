@@ -1,3 +1,7 @@
+/**
+ * author: Carter Kerstetter
+ */
+
 package carter.tictactoe;
 
 import android.content.Intent;

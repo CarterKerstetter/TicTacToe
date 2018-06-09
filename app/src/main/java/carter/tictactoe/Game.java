@@ -1,18 +1,17 @@
+/**
+ * author: Carter Kerstetter
+ */
+
 package carter.tictactoe;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Random;
 
 public class Game extends AppCompatActivity implements Runnable{
@@ -73,6 +72,7 @@ public class Game extends AppCompatActivity implements Runnable{
         Intent intent = getIntent();
         difficulty = intent.getStringExtra("difficulty");
         setContentView(R.layout.activity_game);
+        //set up the title
         this.setTitle("TicTacToe: " + difficulty);
         h_1 = (View) findViewById(R.id.horizontal1);
         h_2 = (View) findViewById(R.id.horizontal2);
