@@ -4,6 +4,9 @@
 
 package carter.tictactoe;
 
+/**
+ * Used to indicate what kind of move was made on the tic tac toe board.
+ */
 public class Move {
     private Coordinates coordinates;
     private Mark mark;

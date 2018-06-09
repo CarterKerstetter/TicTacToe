@@ -5,6 +5,7 @@
 package carter.tictactoe;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -71,6 +72,7 @@ public class Game extends AppCompatActivity implements Runnable{
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         difficulty = intent.getStringExtra("difficulty");
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_game);
         //set up the title
         this.setTitle("TicTacToe: " + difficulty);
