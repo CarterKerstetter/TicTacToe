@@ -356,4 +356,57 @@ public class TicTacToeModelTest {
         assertEquals(mark_blank,CuT.getWinner());
     }
 
+    @Test
+    public void get_win_path_test() {
+        CuT = new TicTacToeModel();
+        board = new Mark[3][3];
+        for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
+            for(int col = 0;col<TicTacToeModel.BOARD_SIZE;col++) {
+                board[row][col] = mark_blank;
+            }
+        }
+        CuT.setBoard(board);
+        assertEquals(8,CuT.getWinPath());
+        board[row_top][col_left] = mark_x;
+        board[row_top][col_middle] = mark_x;
+        board[row_top][col_right] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(0,CuT.getWinPath());
+        board[row_top][col_right] = mark_o;
+        board[row_middle][col_left] = mark_o;
+        board[row_middle][col_middle] = mark_o;
+        board[row_middle][col_right] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(1,CuT.getWinPath());
+        board[row_middle][col_right] = mark_x;
+        board[row_bottom][col_left] = mark_x;
+        board[row_bottom][col_middle] = mark_x;
+        board[row_bottom][col_right] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(2,CuT.getWinPath());
+        board[row_bottom][col_middle] = mark_o;
+        board[row_middle][col_left] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(3,CuT.getWinPath());
+        board[row_middle][col_left] = mark_o;
+        board[row_top][col_middle] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(4,CuT.getWinPath());
+        board[row_bottom][col_left] = mark_o;
+        board[row_bottom][col_middle] = mark_x;
+        board[row_top][col_right] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(5,CuT.getWinPath());
+        board[row_top][col_right] = mark_o;
+        board[row_middle][col_middle] = mark_x;
+        CuT.setBoard(board);
+        assertEquals(6,CuT.getWinPath());
+        board[row_middle][col_middle] = mark_o;
+        CuT.setBoard(board);
+        assertEquals(7,CuT.getWinPath());
+        board[row_middle][col_middle] = mark_blank;
+        CuT.setBoard(board);
+        assertEquals(8,CuT.getWinPath());
+    }
+
 }
