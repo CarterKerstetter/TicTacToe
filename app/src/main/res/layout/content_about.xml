@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="66dp"
         android:layout_marginBottom="3dp"
-        android:text="The music is 'Cool Piano,' 'Two Pianos,' and A Sweet Place by Tagirijus."
+        android:text="The music is 'Cool Piano,' 'Two Pianos,' and 'A Sweet Place' by Tagirijus."
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"

@@ -127,6 +127,8 @@ public class Game extends AppCompatActivity implements Runnable{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_info) {
+            Intent myIntent = new Intent(getBaseContext(),About.class);
+            startActivityForResult(myIntent, 0);
             return true;
         }
 
