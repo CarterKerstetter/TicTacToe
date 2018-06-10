@@ -9,6 +9,9 @@ import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ public class Game extends AppCompatActivity implements Runnable{
     TextView o_notification;
     TextView x_notification;
     String difficulty;
+    boolean exit = false;
 
     ImageView[] x_list;
     ImageView x_0;
@@ -47,6 +51,16 @@ public class Game extends AppCompatActivity implements Runnable{
     ImageView o_6;
     ImageView o_7;
     ImageView o_8;
+
+    ImageView[] win_list;
+    ImageView win_0;
+    ImageView win_1;
+    ImageView win_2;
+    ImageView win_3;
+    ImageView win_4;
+    ImageView win_5;
+    ImageView win_6;
+    ImageView win_7;
 
     Button[] b_list;
     Button b_0;
@@ -76,6 +90,8 @@ public class Game extends AppCompatActivity implements Runnable{
         difficulty = intent.getStringExtra("difficulty");
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_game);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         music= MediaPlayer.create(Game.this,R.raw.in_game_music);
         music.setLooping(true);
         music.start();
@@ -93,6 +109,28 @@ public class Game extends AppCompatActivity implements Runnable{
         mark = Mark.BLANK;
         game = new TicTacToeModel();
         startNewGame();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_info) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void startNewGame() {
@@ -179,7 +217,7 @@ public class Game extends AppCompatActivity implements Runnable{
     }
 
     public void run() {
-        while(!game.gameCompleted()) {
+        while(!exit && !game.gameCompleted()) {
             synchronized (game) {
                 try {
                     game.wait();
@@ -234,7 +272,16 @@ public class Game extends AppCompatActivity implements Runnable{
                 Toast.makeText(getApplicationContext(), "You lost!",
                         Toast.LENGTH_LONG).show();
             }
+            int winPath = game.getWinPath();
+            if(winPath != 8) {
+                win_list[game.getWinPath()].setVisibility(View.VISIBLE);
+            }
             b_new_game.setVisibility(View.VISIBLE);
+        }
+        else {
+            for(int line=0;line<win_list.length;line++) {
+                win_list[line].setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -298,6 +345,24 @@ public class Game extends AppCompatActivity implements Runnable{
         o_list[6] = o_6;
         o_list[7] = o_7;
         o_list[8] = o_8;
+
+        win_0 = (ImageView) findViewById(R.id.win_0);
+        win_1 = (ImageView) findViewById(R.id.win_1);
+        win_2 = (ImageView) findViewById(R.id.win_2);
+        win_3 = (ImageView) findViewById(R.id.win_3);
+        win_4 = (ImageView) findViewById(R.id.win_4);
+        win_5 = (ImageView) findViewById(R.id.win_5);
+        win_6 = (ImageView) findViewById(R.id.win_6);
+        win_7 = (ImageView) findViewById(R.id.win_7);
+        win_list = new ImageView[8];
+        win_list[0] = win_0;
+        win_list[1] = win_1;
+        win_list[2] = win_2;
+        win_list[3] = win_3;
+        win_list[4] = win_4;
+        win_list[5] = win_5;
+        win_list[6] = win_6;
+        win_list[7] = win_7;
 
         b_main_menu = (Button) findViewById(R.id.b_main_menu);
         b_new_game = (Button) findViewById(R.id.b_new_game);
@@ -385,13 +450,13 @@ public class Game extends AppCompatActivity implements Runnable{
         });
         b_main_menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                ai.stopRunning();
+                exit = true;
                 if(otherPlayer.getState()== Thread.State.WAITING) {
+                    ai.stopRunning();
                     synchronized (game) {
                         game.notifyAll();
                     }
                 }
-                //game.notifyAll();
                 Intent myIntent = new Intent(view.getContext(), MainMenu.class);
                 startActivityForResult(myIntent, 0);
             }
