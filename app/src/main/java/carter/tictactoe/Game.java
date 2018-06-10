@@ -1,9 +1,4 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
-
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -20,69 +15,28 @@ import android.widget.Toast;
 import java.util.Random;
 
 public class Game extends AppCompatActivity implements Runnable{
-    TicTacToeModel game;
-    Thread otherPlayer;
-    PlayerAI ai;
-    Mark mark;
-    int i;
-    TextView o_notification;
-    TextView x_notification;
-    String difficulty;
-    boolean exit = false;
+    private Thread otherPlayer;
+    private PlayerAI ai;
+    private TextView o_notification;
+    private TextView x_notification;
+    private String difficulty;
+    private Button b_new_game;
+    private MediaPlayer music;
+    private ImageView[] x_list = new ImageView[TicTacToeModel.BOARD_SPACES];
+    private ImageView[] o_list = new ImageView[TicTacToeModel.BOARD_SPACES];
+    private Button[] b_list = new Button[TicTacToeModel.BOARD_SPACES];
+    private ImageView[] win_list = new ImageView[TicTacToeModel.WIN_PATHS];
+    private final TicTacToeModel game = new TicTacToeModel();
+    private Mark mark = Mark.BLANK;
+    private boolean exit = false;
+    public final String WIN_TEXT = "You win!";
+    public final String LOSE_TEXT = "You lost!";
+    public final String TIE_TEXT = "It is a tie!";
 
-    ImageView[] x_list;
-    ImageView x_0;
-    ImageView x_1;
-    ImageView x_2;
-    ImageView x_3;
-    ImageView x_4;
-    ImageView x_5;
-    ImageView x_6;
-    ImageView x_7;
-    ImageView x_8;
-
-    ImageView[] o_list;
-    ImageView o_0;
-    ImageView o_1;
-    ImageView o_2;
-    ImageView o_3;
-    ImageView o_4;
-    ImageView o_5;
-    ImageView o_6;
-    ImageView o_7;
-    ImageView o_8;
-
-    ImageView[] win_list;
-    ImageView win_0;
-    ImageView win_1;
-    ImageView win_2;
-    ImageView win_3;
-    ImageView win_4;
-    ImageView win_5;
-    ImageView win_6;
-    ImageView win_7;
-
-    Button[] b_list;
-    Button b_0;
-    Button b_1;
-    Button b_2;
-    Button b_3;
-    Button b_4;
-    Button b_5;
-    Button b_6;
-    Button b_7;
-    Button b_8;
-
-    Button b_new_game;
-    Button b_main_menu;
-
-    View h_1;
-    View h_2;
-    View v_1;
-    View v_2;
-
-    MediaPlayer music;
-
+    /**
+     * Creates page for the tic tac toe game to be played on.
+     * @param savedInstanceState state passed in
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,58 +44,44 @@ public class Game extends AppCompatActivity implements Runnable{
         difficulty = intent.getStringExtra("difficulty");
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_game);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         music= MediaPlayer.create(Game.this,R.raw.in_game_music);
         music.setLooping(true);
         music.start();
         //set up the title
         this.setTitle("TicTacToe: " + difficulty);
-        h_1 = (View) findViewById(R.id.horizontal1);
-        h_2 = (View) findViewById(R.id.horizontal2);
-        v_1 = (View) findViewById(R.id.vertical1);;
-        v_2 = (View) findViewById(R.id.vertical2);
-        h_1.bringToFront();
-        h_2.bringToFront();
-        v_1.bringToFront();
-        v_2.bringToFront();
-        setUpImageViews();
-        mark = Mark.BLANK;
-        game = new TicTacToeModel();
+        o_notification = findViewById(R.id.o_notification);
+        x_notification = findViewById(R.id.x_notification);
+        setUpMarkViews();
+        setUpMainButtons();
         startNewGame();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_info) {
             Intent myIntent = new Intent(getBaseContext(),About.class);
             startActivityForResult(myIntent, 0);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void startNewGame() {
+    private void newMark() {
         if(mark == Mark.X) {
             mark = Mark.O;
             o_notification.setVisibility(View.VISIBLE);
             x_notification.setVisibility(View.INVISIBLE);
         }
-        else if (mark == Mark.O){
+        else if (mark == Mark.O) {
             mark = Mark.X;
             x_notification.setVisibility(View.VISIBLE);
             o_notification.setVisibility(View.INVISIBLE);
@@ -149,8 +89,6 @@ public class Game extends AppCompatActivity implements Runnable{
         else {
             Random random = new Random();
             int startMark = Math.abs(random.nextInt())%2;
-            o_notification = (TextView) findViewById(R.id.o_notification);
-            x_notification = (TextView) findViewById(R.id.x_notification);
             if(startMark == 0) {
                 mark = Mark.X;
                 x_notification.setVisibility(View.VISIBLE);
@@ -162,6 +100,9 @@ public class Game extends AppCompatActivity implements Runnable{
                 x_notification.setVisibility(View.INVISIBLE);
             }
         }
+    }
+
+    private void setAI() {
         switch (difficulty) {
             case "Easy":
                 if(mark == Mark.X) {
@@ -195,6 +136,14 @@ public class Game extends AppCompatActivity implements Runnable{
                     ai = new PlayerAI(Difficulty.MEDIUM, Mark.X, game);
                 }
         }
+    }
+
+    private void startNewGame() {
+        for(ImageView line : win_list) {
+            line.setVisibility(View.INVISIBLE);
+        }
+        newMark();
+        setAI();
         game.newGame();
         Thread thisPlayer = new Thread(this);
         thisPlayer.start();
@@ -231,7 +180,7 @@ public class Game extends AppCompatActivity implements Runnable{
                     });
                 }
                 catch(InterruptedException e) {
-                    System.out.println(e);
+                    e.printStackTrace();
                 }
             }
         }
@@ -245,17 +194,14 @@ public class Game extends AppCompatActivity implements Runnable{
                     case X:
                         x_list[row*3+col].setVisibility(View.VISIBLE);
                         o_list[row*3+col].setVisibility(View.INVISIBLE);
-                        x_list[row*3+col].setClickable(false);
                         break;
                     case O:
                         x_list[row*3+col].setVisibility(View.INVISIBLE);
                         o_list[row*3+col].setVisibility(View.VISIBLE);
-                        x_list[row*3+col].setClickable(false);
                         break;
                     case BLANK:
                         x_list[row*3+col].setVisibility(View.INVISIBLE);
                         o_list[row*3+col].setVisibility(View.INVISIBLE);
-                        x_list[row*3+col].setClickable(true);
                         break;
                 }
             }
@@ -263,193 +209,28 @@ public class Game extends AppCompatActivity implements Runnable{
         if(game.gameCompleted()) {
             Mark winner = game.getWinner();
             if(winner==mark) {
-                Toast.makeText(getApplicationContext(), "You win!",
+                Toast.makeText(getApplicationContext(), WIN_TEXT,
                         Toast.LENGTH_LONG).show();
             }
             else if(winner==Mark.BLANK) {
-                Toast.makeText(getApplicationContext(), "It is a tie!",
+                Toast.makeText(getApplicationContext(), TIE_TEXT,
                         Toast.LENGTH_LONG).show();
             }
             else {
-                Toast.makeText(getApplicationContext(), "You lost!",
+                Toast.makeText(getApplicationContext(), LOSE_TEXT,
                         Toast.LENGTH_LONG).show();
             }
             int winPath = game.getWinPath();
-            if(winPath != 8) {
+            if(winPath != TicTacToeModel.WIN_PATHS) {
                 win_list[game.getWinPath()].setVisibility(View.VISIBLE);
             }
             b_new_game.setVisibility(View.VISIBLE);
         }
-        else {
-            for(int line=0;line<win_list.length;line++) {
-                win_list[line].setVisibility(View.INVISIBLE);
-            }
-        }
     }
 
-    private void setUpImageViews() {
-        b_0 = (Button) findViewById(R.id.b_0);
-        b_1 = (Button) findViewById(R.id.b_1);
-        b_2 = (Button) findViewById(R.id.b_2);
-        b_3 = (Button) findViewById(R.id.b_3);
-        b_4 = (Button) findViewById(R.id.b_4);
-        b_5 = (Button) findViewById(R.id.b_5);
-        b_6 = (Button) findViewById(R.id.b_6);
-        b_7 = (Button) findViewById(R.id.b_7);
-        b_8 = (Button) findViewById(R.id.b_8);
-        b_list = new Button[9];
-        b_list[0] = b_0;
-        b_list[1] = b_1;
-        b_list[2] = b_2;
-        b_list[3] = b_3;
-        b_list[4] = b_4;
-        b_list[5] = b_5;
-        b_list[6] = b_6;
-        b_list[7] = b_7;
-        b_list[8] = b_8;
-
-        x_0 = (ImageView) findViewById(R.id.x_0);
-        x_1 = (ImageView) findViewById(R.id.x_1);
-        x_2 = (ImageView) findViewById(R.id.x_2);
-        x_3 = (ImageView) findViewById(R.id.x_3);
-        x_4 = (ImageView) findViewById(R.id.x_4);
-        x_5 = (ImageView) findViewById(R.id.x_5);
-        x_6 = (ImageView) findViewById(R.id.x_6);
-        x_7 = (ImageView) findViewById(R.id.x_7);
-        x_8 = (ImageView) findViewById(R.id.x_8);
-        x_list = new ImageView[9];
-        x_list[0] = x_0;
-        x_list[1] = x_1;
-        x_list[2] = x_2;
-        x_list[3] = x_3;
-        x_list[4] = x_4;
-        x_list[5] = x_5;
-        x_list[6] = x_6;
-        x_list[7] = x_7;
-        x_list[8] = x_8;
-
-        o_0 = (ImageView) findViewById(R.id.o_0);
-        o_1 = (ImageView) findViewById(R.id.o_1);
-        o_2 = (ImageView) findViewById(R.id.o_2);
-        o_3 = (ImageView) findViewById(R.id.o_3);
-        o_4 = (ImageView) findViewById(R.id.o_4);
-        o_5 = (ImageView) findViewById(R.id.o_5);
-        o_6 = (ImageView) findViewById(R.id.o_6);
-        o_7 = (ImageView) findViewById(R.id.o_7);
-        o_8 = (ImageView) findViewById(R.id.o_8);
-        o_list = new ImageView[9];
-        o_list[0] = o_0;
-        o_list[1] = o_1;
-        o_list[2] = o_2;
-        o_list[3] = o_3;
-        o_list[4] = o_4;
-        o_list[5] = o_5;
-        o_list[6] = o_6;
-        o_list[7] = o_7;
-        o_list[8] = o_8;
-
-        win_0 = (ImageView) findViewById(R.id.win_0);
-        win_1 = (ImageView) findViewById(R.id.win_1);
-        win_2 = (ImageView) findViewById(R.id.win_2);
-        win_3 = (ImageView) findViewById(R.id.win_3);
-        win_4 = (ImageView) findViewById(R.id.win_4);
-        win_5 = (ImageView) findViewById(R.id.win_5);
-        win_6 = (ImageView) findViewById(R.id.win_6);
-        win_7 = (ImageView) findViewById(R.id.win_7);
-        win_list = new ImageView[8];
-        win_list[0] = win_0;
-        win_list[1] = win_1;
-        win_list[2] = win_2;
-        win_list[3] = win_3;
-        win_list[4] = win_4;
-        win_list[5] = win_5;
-        win_list[6] = win_6;
-        win_list[7] = win_7;
-
-        b_main_menu = (Button) findViewById(R.id.b_main_menu);
-        b_new_game = (Button) findViewById(R.id.b_new_game);
-
-        b_0.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 0;
-                int col = 0;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 0;
-                int col = 1;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 0;
-                int col = 2;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 1;
-                int col = 0;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 1;
-                int col = 1;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_5.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 1;
-                int col = 2;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_6.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 2;
-                int col = 0;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_7.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 2;
-                int col = 1;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
-        b_8.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int row = 2;
-                int col = 2;
-                Coordinates coordinates = new Coordinates(row, col);
-                Move move = new Move(coordinates,mark);
-                game.makeMove(move);
-            }
-        });
+    private void setUpMainButtons() {
+        b_new_game =  findViewById(R.id.b_new_game);
+        Button b_main_menu = findViewById(R.id.b_main_menu);
         b_main_menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 exit = true;
@@ -466,6 +247,125 @@ public class Game extends AppCompatActivity implements Runnable{
         b_new_game.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 startNewGame();
+            }
+        });
+    }
+
+    private void setUpMarkViews() {
+        b_list[0] = findViewById(R.id.b_0);
+        b_list[1] = findViewById(R.id.b_1);
+        b_list[2] = findViewById(R.id.b_2);
+        b_list[3] = findViewById(R.id.b_3);
+        b_list[4] = findViewById(R.id.b_4);
+        b_list[5] = findViewById(R.id.b_5);
+        b_list[6] = findViewById(R.id.b_6);
+        b_list[7] = findViewById(R.id.b_7);
+        b_list[8] = findViewById(R.id.b_8);
+        x_list[0] = findViewById(R.id.x_0);
+        x_list[1] = findViewById(R.id.x_1);
+        x_list[2] = findViewById(R.id.x_2);
+        x_list[3] = findViewById(R.id.x_3);
+        x_list[4] = findViewById(R.id.x_4);
+        x_list[5] = findViewById(R.id.x_5);
+        x_list[6] = findViewById(R.id.x_6);
+        x_list[7] = findViewById(R.id.x_7);
+        x_list[8] = findViewById(R.id.x_8);
+        o_list[0] = findViewById(R.id.o_0);
+        o_list[1] = findViewById(R.id.o_1);
+        o_list[2] = findViewById(R.id.o_2);
+        o_list[3] = findViewById(R.id.o_3);
+        o_list[4] = findViewById(R.id.o_4);
+        o_list[5] = findViewById(R.id.o_5);
+        o_list[6] = findViewById(R.id.o_6);
+        o_list[7] = findViewById(R.id.o_7);
+        o_list[8] = findViewById(R.id.o_8);
+        win_list[0] = findViewById(R.id.win_0);
+        win_list[1] = findViewById(R.id.win_1);
+        win_list[2] = findViewById(R.id.win_2);
+        win_list[3] = findViewById(R.id.win_3);
+        win_list[4] = findViewById(R.id.win_4);
+        win_list[5] = findViewById(R.id.win_5);
+        win_list[6] = findViewById(R.id.win_6);
+        win_list[7] = findViewById(R.id.win_7);
+        b_list[0].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 0;
+                int col = 0;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[1].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 0;
+                int col = 1;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[2].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 0;
+                int col = 2;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[3].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 1;
+                int col = 0;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[4].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 1;
+                int col = 1;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[5].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 1;
+                int col = 2;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[6].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 2;
+                int col = 0;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[7].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 2;
+                int col = 1;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
+            }
+        });
+        b_list[8].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int row = 2;
+                int col = 2;
+                Coordinates coordinates = new Coordinates(row, col);
+                Move move = new Move(coordinates,mark);
+                game.makeMove(move);
             }
         });
     }

@@ -1,7 +1,4 @@
 package carter.tictactoe;
-
-import android.util.Log;
-
 import java.util.Random;
 
 public class PlayerAI implements Runnable{
@@ -12,7 +9,7 @@ public class PlayerAI implements Runnable{
     private volatile boolean exit = false;
     private boolean firstMove = true;
 
-    public PlayerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
+    PlayerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
         this.difficulty = difficulty;
         this.mark = mark;
         this.game = game;
@@ -27,7 +24,7 @@ public class PlayerAI implements Runnable{
                         game.wait();
                     }
                     catch(InterruptedException e) {
-                        System.out.println(e);
+                        e.printStackTrace();
                     }
                 }
             }
@@ -39,6 +36,18 @@ public class PlayerAI implements Runnable{
 
     public void stopRunning() {
         exit = true;
+    }
+
+    private Mark oppositeMark(Mark mark) {
+        if(mark == Mark.X) {
+            return Mark.O;
+        }
+        else if(mark == Mark.O) {
+            return Mark.X;
+        }
+        else {
+            return Mark.BLANK;
+        }
     }
 
     private void takeTurn() {
@@ -87,36 +96,21 @@ public class PlayerAI implements Runnable{
                 game.makeMove(new Move(nextMove, mark));
                 break;
         }
-        //game.makeMove(mark,nextMove);
     }
 
     private Mark[][] cloneBoard(Mark[][] board) {
         Mark[][] clone = new Mark[TicTacToeModel.BOARD_SIZE][TicTacToeModel.BOARD_SIZE];
         for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
-            for (int col = 0; col < TicTacToeModel.BOARD_SIZE; col++) {
-                clone[row][col] = board[row][col];
-            }
+            clone[row] = board[row].clone();
         }
         return clone;
-    }
-
-    private Mark oppositeMark(Mark mark) {
-        if(mark == Mark.X) {
-            return Mark.O;
-        }
-        else if(mark == Mark.O) {
-            return Mark.X;
-        }
-        else {
-            return Mark.BLANK;
-        }
     }
 
     private Coordinates winMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean winExists = false;
-        boolean[] wins = new boolean[TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE];
-        for(int i=0;i<TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE;i++) {
+        boolean[] wins = new boolean[TicTacToeModel.BOARD_SPACES];
+        for(int i=0;i<TicTacToeModel.BOARD_SPACES;i++) {
             wins[i] = false;
         }
         //for each possible move
@@ -147,9 +141,9 @@ public class PlayerAI implements Runnable{
         //randomize moves so the AI isn't the same every game.
         if(winExists) {
             Random random = new Random();
-            int check = Math.abs(random.nextInt())%9;
+            int check = Math.abs(random.nextInt())%TicTacToeModel.BOARD_SPACES;
             for(;!wins[check];check++) {
-                if(check >= 8) {
+                if(check >= TicTacToeModel.BOARD_SPACES-1) {
                     check = -1;
                 }
             }
@@ -190,8 +184,8 @@ public class PlayerAI implements Runnable{
     private Coordinates tieMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean tieExists = false;
-        boolean[] ties = new boolean[TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE];
-        for(int i=0;i<TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE;i++) {
+        boolean[] ties = new boolean[TicTacToeModel.BOARD_SPACES];
+        for(int i=0;i<TicTacToeModel.BOARD_SPACES;i++) {
             ties[i] = false;
         }
         //for each possible move
@@ -222,9 +216,9 @@ public class PlayerAI implements Runnable{
         //randomize moves so the AI isn't the same every game.
         if(tieExists) {
             Random random = new Random();
-            int check = Math.abs(random.nextInt())%9;
+            int check = Math.abs(random.nextInt())%TicTacToeModel.BOARD_SPACES;
             for(;!ties[check];check++) {
-                if(check >= 8) {
+                if(check >= TicTacToeModel.BOARD_SPACES-1) {
                     check = -1;
                 }
             }
@@ -273,8 +267,8 @@ public class PlayerAI implements Runnable{
     private Coordinates loseMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean lossExists = false;
-        boolean[] losses = new boolean[TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE];
-        for(int i=0;i<TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE;i++) {
+        boolean[] losses = new boolean[TicTacToeModel.BOARD_SPACES];
+        for(int i=0;i<TicTacToeModel.BOARD_SPACES;i++) {
             losses[i] = false;
         }
         //for each possible move
@@ -298,9 +292,9 @@ public class PlayerAI implements Runnable{
         //randomize moves so the AI isn't the same every game.
         if(lossExists) {
             Random random = new Random();
-            int check = Math.abs(random.nextInt())%9;
+            int check = Math.abs(random.nextInt())%TicTacToeModel.BOARD_SPACES;
             for(;!losses[check];check++) {
-                if(check >= 8) {
+                if(check >= TicTacToeModel.BOARD_SPACES-1) {
                     check = -1;
                 }
             }
@@ -313,7 +307,6 @@ public class PlayerAI implements Runnable{
 
     private boolean willWin(Mark[][] board, Mark mark) {
         Mark[][] clone;
-        boolean winExists = false;
         //for each move
         for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
             for(int col = 0;col < TicTacToeModel.BOARD_SIZE;col++) {
@@ -324,39 +317,23 @@ public class PlayerAI implements Runnable{
                     testGame.setBoard(clone);
                     //if the game ends and you win, you can win
                     if(testGame.gameCompleted()) {
-                        if(testGame.getWinner() == mark) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
+                        return testGame.getWinner() == mark;
                     }
                     //the game is not over, but the other player will lose, than you can make
                     //a winning move
-                    else if (willLose(clone, oppositeMark(mark))) {
-                        return true;
-                    }
-                    //if the other play must tie, this is a tie move
-                    else {
-                        return false;
-                    }
+                    return willLose(clone, oppositeMark(mark));
                 }
             }
         }
-        if(game.getWinner() == mark) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return game.getWinner() == mark;
     }
 
     private Coordinates oneTurnWinMove(Mark mark) {
         Mark[][] clone;
         Mark[][] board = game.getBoard();
         boolean winExists = false;
-        boolean[] wins = new boolean[TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE];
-        for(int i=0;i<TicTacToeModel.BOARD_SIZE*TicTacToeModel.BOARD_SIZE;i++) {
+        boolean[] wins = new boolean[TicTacToeModel.BOARD_SPACES];
+        for(int i=0;i<TicTacToeModel.BOARD_SPACES;i++) {
             wins[i] = false;
         }
         //for each possible move
@@ -378,9 +355,9 @@ public class PlayerAI implements Runnable{
         //randomize moves so the AI isn't the same every game.
         if(winExists) {
             Random random = new Random();
-            int check = Math.abs(random.nextInt())%9;
+            int check = Math.abs(random.nextInt())%TicTacToeModel.BOARD_SPACES;
             for(;!wins[check];check++) {
-                if(check >= 8) {
+                if(check >= TicTacToeModel.BOARD_SPACES-1) {
                     check = -1;
                 }
             }

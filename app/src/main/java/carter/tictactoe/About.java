@@ -1,25 +1,19 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
-
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.SeekBar;
 
+/**
+ * Class used to open the about page.
+ */
 public class About extends AppCompatActivity {
     private MediaPlayer music;
 
+    /**
+     * Function used to create the about page
+     * @param savedInstanceState saved instance state passed in by previous activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +24,9 @@ public class About extends AppCompatActivity {
         music.start();
     }
 
+    /**
+     * Decides what happens when the app is closed
+     */
     @Override
     protected void onPause() {
         if (music.isPlaying()) {
@@ -38,6 +35,9 @@ public class About extends AppCompatActivity {
         super.onPause();
     }
 
+    /**
+     * Decides what happens when the app is openned again.
+     */
     @Override
     protected void onResume() {
         super.onResume();

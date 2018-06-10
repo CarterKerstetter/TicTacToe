@@ -1,7 +1,3 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
 
 /**
@@ -16,7 +12,7 @@ public class Coordinates {
      * @param row the row of the coordinates.
      * @param col the column of the coordinates.
      */
-    public Coordinates(int row, int col) {
+    Coordinates(int row, int col) {
         this.row = row;
         this.col = col;
     }

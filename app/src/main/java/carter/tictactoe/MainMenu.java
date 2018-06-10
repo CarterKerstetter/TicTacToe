@@ -1,10 +1,4 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -17,24 +11,31 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+/**
+ * Opens the main menu of the app
+ */
 public class MainMenu extends AppCompatActivity {
     private MediaPlayer music;
 
+    /**
+     * Creates the main page
+     * @param savedInstanceState state passed in
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main_menu);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         music= MediaPlayer.create(MainMenu.this,R.raw.background_music);
         music.setLooping(true);
         music.start();
-        Button next = (Button) findViewById(R.id.start);
+        Button next = findViewById(R.id.start);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(), Game.class);
-                SeekBar level = (SeekBar) findViewById(R.id.difficulty);
+                SeekBar level = findViewById(R.id.difficulty);
                 switch(level.getProgress()) {
                     case 0:
                         myIntent.putExtra("difficulty","Easy");
@@ -52,6 +53,9 @@ public class MainMenu extends AppCompatActivity {
         });
     }
 
+    /**
+     * Decides what happens when the app is closed
+     */
     @Override
     protected void onPause() {
         if (music.isPlaying()) {
@@ -60,33 +64,39 @@ public class MainMenu extends AppCompatActivity {
         super.onPause();
     }
 
+    /**
+     * Decides what happens when the app is opened again.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         music.start();
     }
 
+    /**
+     * Creates the toolbar that leads to the about page
+     * @param menu toolbar
+     * @return true when everything works correctly
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_menu, menu);
         return true;
     }
 
+    /**
+     * Decides what happens when an option is selected on the toolbar (opens about page)
+     * @param item contains the id of the element tapped
+     * @return true when finished
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_info) {
             Intent myIntent = new Intent(getBaseContext(),About.class);
             startActivityForResult(myIntent, 0);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

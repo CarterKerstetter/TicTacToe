@@ -1,20 +1,16 @@
-/**
- * author: Carter Kerstetter
- */
-
 package carter.tictactoe;
 
 public class TicTacToeModel {
     private Mark[][] board;
     private Mark turn = Mark.X;
-    public static int BOARD_SIZE = 3;
+    public static final int BOARD_SIZE = 3;
+    public static final int BOARD_SPACES = 9;
+    public static final int WIN_PATHS = 8;
 
 
-    public TicTacToeModel() {
+    TicTacToeModel() {
         board = new Mark[BOARD_SIZE][BOARD_SIZE];
         gameSetup();
-        //this.player = player;
-        //this.playerAI = playerAI;
     }
 
     public synchronized void setBoard(Mark[][] board) {
@@ -37,7 +33,7 @@ public class TicTacToeModel {
     }
 
     //may want to return void and use notifyAll if there is 2 player
-    public synchronized boolean makeMove(Move move) {
+    public synchronized void makeMove(Move move) {
         Mark mark = move.getMark();
         Coordinates coordinates = move.getCoordinates();
         if(!gameCompleted()) {
@@ -48,11 +44,9 @@ public class TicTacToeModel {
                     board[row][col] = mark;
                     swapTurns();
                     notifyAll();
-                    return true;
                 }
             }
         }
-        return false;
     }
 
     private synchronized void swapTurns() {

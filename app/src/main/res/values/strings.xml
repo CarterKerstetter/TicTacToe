@@ -4,4 +4,14 @@
     <string name="title_activity_aigame">AIGame</string>
     <string name="start">Play Game!</string>
     <string name ="level">Difficulty:</string>
+    <string name ="music_name">"The music is 'Cool Piano,' 'Two Pianos,' and 'A Sweet Place' by Tagirijus."</string>
+    <string name="music_location">"From the Free Music Archive."</string>
+    <string name="music_license">"CC BY NC SA."</string>
+    <string name="win_path_description">"Line used to show winning path."</string>
+    <string name="is_x">"You are X's."</string>
+    <string name="x_description">"X mark."</string>
+    <string name="o_description">"O mark."</string>
+    <string name="is_o">"You are O's."</string>
+    <string name="menu">Main Menu</string>
+    <string name="new_game">"New Game"</string>
 </resources>
