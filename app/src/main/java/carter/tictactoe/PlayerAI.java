@@ -1,6 +1,9 @@
 package carter.tictactoe;
 import java.util.Random;
 
+/**
+ * Class that represents the opponent AI player
+ */
 public class PlayerAI implements Runnable{
     private Difficulty difficulty;
     private Mark mark;
@@ -9,12 +12,21 @@ public class PlayerAI implements Runnable{
     private volatile boolean exit = false;
     private boolean firstMove = true;
 
+    /**
+     * constructor
+     * @param difficulty level the AI plays at
+     * @param mark what mark the AI is
+     * @param game the game that will be played on
+     */
     PlayerAI(Difficulty difficulty, Mark mark, TicTacToeModel game) {
         this.difficulty = difficulty;
         this.mark = mark;
         this.game = game;
     }
 
+    /**
+     * run method for the AI thread
+     */
     @Override
     public void run() {
         while(!exit && !game.gameCompleted()) {
@@ -34,10 +46,18 @@ public class PlayerAI implements Runnable{
         }
     }
 
+    /**
+     * sets exit to true, when the AI thread is next updated it will exit the game
+     */
     public void stopRunning() {
         exit = true;
     }
 
+    /**
+     * helper method that gives the opposite mark of the one given
+     * @param mark mark that will be reversed
+     * @return X if O is given, O if X is given, BLANK if BLANK is given.
+     */
     private Mark oppositeMark(Mark mark) {
         if(mark == Mark.X) {
             return Mark.O;
@@ -50,9 +70,13 @@ public class PlayerAI implements Runnable{
         }
     }
 
+    /**
+     * helper method that takes the move for the AI for one move
+     */
     private void takeTurn() {
         Mark[][] board = game.getBoard();
         Coordinates nextMove;
+        Move move;
         switch(difficulty) {
             case EASY:
                 nextMove = oneTurnWinMove(mark);
@@ -65,7 +89,8 @@ public class PlayerAI implements Runnable{
                 if(nextMove.getRow() == -1) {
                     nextMove = winMove(board, mark);
                 }
-                game.makeMove(new Move(nextMove, mark));
+                move = new Move(nextMove, mark);
+                game.makeMove(move);
                 break;
             case MEDIUM:
                 nextMove = oneTurnWinMove(mark);
@@ -85,7 +110,8 @@ public class PlayerAI implements Runnable{
                 if(nextMove.getRow() == -1) {
                     nextMove = winMove(board, mark);
                 }
-                game.makeMove(new Move(nextMove, mark));
+                move = new Move(nextMove, mark);
+                game.makeMove(move);
                 break;
             case HARD:
                 nextMove = winMove(board, mark);
@@ -93,11 +119,17 @@ public class PlayerAI implements Runnable{
                     nextMove = tieMove(board, mark);
                 }
                 //the hard AI doesnt need to check for losing moves
-                game.makeMove(new Move(nextMove, mark));
+                move = new Move(nextMove, mark);
+                game.makeMove(move);
                 break;
         }
     }
 
+    /**
+     * Helper method that clones a given board
+     * @param board board to be cloned
+     * @return clone of the board given
+     */
     private Mark[][] cloneBoard(Mark[][] board) {
         Mark[][] clone = new Mark[TicTacToeModel.BOARD_SIZE][TicTacToeModel.BOARD_SIZE];
         for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
@@ -106,6 +138,12 @@ public class PlayerAI implements Runnable{
         return clone;
     }
 
+    /**
+     * Returns the coordinates of a win move if it exists
+     * @param board the current game
+     * @param mark the mark that is playing now
+     * @return a winning move if it exists
+     */
     private Coordinates winMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean winExists = false;
@@ -147,13 +185,21 @@ public class PlayerAI implements Runnable{
                     check = -1;
                 }
             }
-            return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
+            int row = check/TicTacToeModel.BOARD_SIZE;
+            int col = check%TicTacToeModel.BOARD_SIZE;
+            return new Coordinates(row, col);
         }
         else {
             return new Coordinates(-1, -1);
         }
     }
 
+    /**
+     * Finds out if the player will lose if tkhe enemy plays correctly
+     * @param board board configuration
+     * @param mark mark that will move now
+     * @return true if the player in this situation will lose
+     */
     private boolean willLose(Mark[][] board, Mark mark) {
         Mark[][] clone;
         //for each move
@@ -181,6 +227,12 @@ public class PlayerAI implements Runnable{
         return true;
     }
 
+    /**
+     * returns a tie move if one exists
+     * @param board board configuration
+     * @param mark mark moving now
+     * @return a tie move if it exists
+     */
     private Coordinates tieMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean tieExists = false;
@@ -222,13 +274,21 @@ public class PlayerAI implements Runnable{
                     check = -1;
                 }
             }
-            return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
+            int row = check/TicTacToeModel.BOARD_SIZE;
+            int col = check%TicTacToeModel.BOARD_SIZE;
+            return new Coordinates(row, col);
         }
         else {
             return new Coordinates(-1, -1);
         }
     }
 
+    /**
+     * returns whether or not the current player will tie at best
+     * @param board board configuration
+     * @param mark mark moving now
+     * @return true if the player will tie at best, false otherwise
+     */
     private boolean willTie(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean tieExists = false;
@@ -264,6 +324,12 @@ public class PlayerAI implements Runnable{
         return tieExists;
     }
 
+    /**
+     * returns coordinates for a losing move if one exists
+     * @param board board configuration
+     * @param mark mark moving now
+     * @return a losing move if one exists
+     */
     private Coordinates loseMove(Mark[][] board, Mark mark) {
         Mark[][] clone;
         boolean lossExists = false;
@@ -298,13 +364,21 @@ public class PlayerAI implements Runnable{
                     check = -1;
                 }
             }
-            return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
+            int row = check/TicTacToeModel.BOARD_SIZE;
+            int col = check%TicTacToeModel.BOARD_SIZE;
+            return new Coordinates(row, col);
         }
         else {
             return new Coordinates(-1, -1);
         }
     }
 
+    /**
+     * Returns true if the current player will win, false otherwise
+     * @param board board configuration
+     * @param mark current players mark
+     * @return true if the player will win, false otherwise
+     */
     private boolean willWin(Mark[][] board, Mark mark) {
         Mark[][] clone;
         //for each move
@@ -328,6 +402,11 @@ public class PlayerAI implements Runnable{
         return game.getWinner() == mark;
     }
 
+    /**
+     * returns the coordinates to a one turn win move if it exists
+     * @param mark the current player
+     * @return a one turn win move if it exists
+     */
     private Coordinates oneTurnWinMove(Mark mark) {
         Mark[][] clone;
         Mark[][] board = game.getBoard();
@@ -361,7 +440,9 @@ public class PlayerAI implements Runnable{
                     check = -1;
                 }
             }
-            return new Coordinates(check/TicTacToeModel.BOARD_SIZE,check%TicTacToeModel.BOARD_SIZE);
+            int row = check/TicTacToeModel.BOARD_SIZE;
+            int col = check%TicTacToeModel.BOARD_SIZE;
+            return new Coordinates(row, col);
         }
         else {
             return new Coordinates(-1, -1);

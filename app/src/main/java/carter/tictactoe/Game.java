@@ -14,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Random;
 
+/**
+ * opens the page for the tic tac toe game.
+ */
 public class Game extends AppCompatActivity implements Runnable{
     private Thread otherPlayer;
     private PlayerAI ai;
@@ -58,12 +61,23 @@ public class Game extends AppCompatActivity implements Runnable{
         startNewGame();
     }
 
+    /**
+     * creates the toolbar to get to the about page
+     * @param menu toolbar
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_menu, menu);
         return true;
     }
 
+    /**
+     * Decides what happens when options on the toolbar
+     * are selected.
+     * @param item info including what item was selected
+     * @return true if everything works properly
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -75,6 +89,9 @@ public class Game extends AppCompatActivity implements Runnable{
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * helper method to give the player the correct mark for the game.
+     */
     private void newMark() {
         if(mark == Mark.X) {
             mark = Mark.O;
@@ -102,6 +119,9 @@ public class Game extends AppCompatActivity implements Runnable{
         }
     }
 
+    /**
+     * helper method that sets up the AI for the next game
+     */
     private void setAI() {
         switch (difficulty) {
             case "Easy":
@@ -138,6 +158,9 @@ public class Game extends AppCompatActivity implements Runnable{
         }
     }
 
+    /**
+     * helper method that begins a new tic tac toe game
+     */
     private void startNewGame() {
         for(ImageView line : win_list) {
             line.setVisibility(View.INVISIBLE);
@@ -153,6 +176,9 @@ public class Game extends AppCompatActivity implements Runnable{
         b_new_game.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Decides what happens when the app is closed
+     */
     @Override
     protected void onPause() {
         if (music.isPlaying()) {
@@ -161,12 +187,18 @@ public class Game extends AppCompatActivity implements Runnable{
         super.onPause();
     }
 
+    /**
+     * decides what happens when the app is opened again
+     */
     @Override
     protected void onResume() {
         super.onResume();
         music.start();
     }
 
+    /**
+     * run method for the game thread
+     */
     public void run() {
         while(!exit && !game.gameCompleted()) {
             synchronized (game) {
@@ -186,6 +218,9 @@ public class Game extends AppCompatActivity implements Runnable{
         }
     }
 
+    /**
+     * used to update the board to look like the current game model
+     */
     private void updateBoard() {
         Mark[][] board = game.getBoard();
         for(int row=0;row<TicTacToeModel.BOARD_SIZE;row++) {
@@ -228,6 +263,9 @@ public class Game extends AppCompatActivity implements Runnable{
         }
     }
 
+    /**
+     * helper method to set up the main menu and new game buttons
+     */
     private void setUpMainButtons() {
         b_new_game =  findViewById(R.id.b_new_game);
         Button b_main_menu = findViewById(R.id.b_main_menu);
@@ -251,6 +289,9 @@ public class Game extends AppCompatActivity implements Runnable{
         });
     }
 
+    /**
+     * sets up the marks and buttons that are affiliated with them
+     */
     private void setUpMarkViews() {
         b_list[0] = findViewById(R.id.b_0);
         b_list[1] = findViewById(R.id.b_1);

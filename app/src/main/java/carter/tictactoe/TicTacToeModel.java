@@ -1,5 +1,8 @@
 package carter.tictactoe;
 
+/**
+ * Model for the tic tac toe game
+ */
 public class TicTacToeModel {
     private Mark[][] board;
     private Mark turn = Mark.X;
@@ -7,17 +10,25 @@ public class TicTacToeModel {
     public static final int BOARD_SPACES = 9;
     public static final int WIN_PATHS = 8;
 
-
+    /**
+     * constructor
+     */
     TicTacToeModel() {
         board = new Mark[BOARD_SIZE][BOARD_SIZE];
         gameSetup();
     }
 
+    /**
+     * Setter for the board of the game
+     * @param board a 2D array of Mark that represents the game board
+     */
     public synchronized void setBoard(Mark[][] board) {
         this.board = board;
     }
 
-
+    /**
+     * helper method that sets up the game
+     */
     private synchronized void gameSetup() {
         for(int row=0;row<BOARD_SIZE;row++) {
             for(int col=0;col<BOARD_SIZE;col++) {
@@ -27,12 +38,19 @@ public class TicTacToeModel {
         turn = Mark.X;
     }
 
+    /**
+     * method that resets the board and starts a new game
+     */
     public synchronized void newGame() {
         gameSetup();
         notifyAll();
     }
 
-    //may want to return void and use notifyAll if there is 2 player
+
+    /**
+     * Method that is called to make a move on the game board
+     * @param move object representing a move in tic tac toe
+     */
     public synchronized void makeMove(Move move) {
         Mark mark = move.getMark();
         Coordinates coordinates = move.getCoordinates();
@@ -49,6 +67,9 @@ public class TicTacToeModel {
         }
     }
 
+    /**
+     * helper method that changes the turn
+     */
     private synchronized void swapTurns() {
         if(turn == Mark.X) {
             turn = Mark.O;
@@ -58,14 +79,26 @@ public class TicTacToeModel {
         }
     }
 
+    /**
+     * Getter for the game board
+     * @return the game board
+     */
     public synchronized Mark[][] getBoard() {
         return board;
     }
 
+    /**
+     * Getter for the turn
+     * @return who the current turn belongs to
+     */
     public synchronized Mark getTurn() {
         return turn;
     }
 
+    /**
+     * tells whether the game is completed or not
+     * @return true if the game is done, false otherwise
+     */
     public synchronized boolean gameCompleted() {
         if (getWinner() == Mark.BLANK) {
             for (int row = 0; row < BOARD_SIZE; row++) {
@@ -79,6 +112,19 @@ public class TicTacToeModel {
         return true;
     }
 
+    /**
+     * shows the winning path if one exists (expects there is only one)
+     * @return an integer representing the winning path:
+     * 0 = top row
+     * 1 = middle row
+     * 2 = bottom row
+     * 3 = left column
+     * 4 = middle column
+     * 5 = right column
+     * 6 = top left to bottom right diagonal
+     * 7 = top right to bottom left diagonal
+     * 8 = no winning path exists
+     */
     public synchronized int getWinPath() {
         //check for wins across a row
         for(int row = 0;row<BOARD_SIZE;row++) {
@@ -112,7 +158,10 @@ public class TicTacToeModel {
 
     }
 
-
+    /**
+     * returns the Mark of the winner
+     * @return the mark of the winning player (BLANK if there is none)
+     */
     public synchronized Mark getWinner() {
         //check for wins across a row
         for(int row = 0;row<BOARD_SIZE;row++) {
@@ -144,5 +193,4 @@ public class TicTacToeModel {
         }
         return Mark.BLANK;
     }
-
 }

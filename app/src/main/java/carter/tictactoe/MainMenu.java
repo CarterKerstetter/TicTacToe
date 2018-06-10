@@ -35,7 +35,7 @@ public class MainMenu extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(), Game.class);
-                SeekBar level = findViewById(R.id.difficulty);
+                SeekBar level = findViewById(R.id.difficulty_bar);
                 switch(level.getProgress()) {
                     case 0:
                         myIntent.putExtra("difficulty","Easy");

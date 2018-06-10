@@ -36,7 +36,7 @@ public class About extends AppCompatActivity {
     }
 
     /**
-     * Decides what happens when the app is openned again.
+     * Decides what happens when the app is opened again.
      */
     @Override
     protected void onResume() {
