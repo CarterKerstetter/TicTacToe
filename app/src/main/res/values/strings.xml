@@ -7,6 +7,7 @@
     <string name ="music_name">"The music is 'Cool Piano,' 'Two Pianos,' and 'A Sweet Place' by Tagirijus."</string>
     <string name="music_location">"From the Free Music Archive."</string>
     <string name="music_license">"CC BY NC SA."</string>
+    <string name="music_license_link">"https://creativecommons.org/licenses/by-nc-sa/4.0/"</string>
     <string name="win_path_description">"Line used to show winning path."</string>
     <string name="is_x">"You are X's."</string>
     <string name="x_description">"X mark."</string>
