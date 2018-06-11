@@ -1,11 +1,11 @@
 package carter.tictactoe;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Unit test for the TicTacToeModel class
+ */
 public class TicTacToeModelTest {
     private int row_top = 0;
     private int row_middle = 1;
@@ -22,11 +22,17 @@ public class TicTacToeModelTest {
     private Mark[][] board;
     private Mark[][] test_board;
 
+    /**
+     * test for the constructor
+     */
     @Test
     public void constructor_test() {
         new TicTacToeModel();
     }
 
+    /**
+     * test for the getTurn method
+     */
     @Test
     public void get_turn_test() {
         CuT = new TicTacToeModel();
@@ -60,6 +66,9 @@ public class TicTacToeModelTest {
         assertEquals(mark_x, CuT.getTurn());
     }
 
+    /**
+     * test for the setTurn method
+     */
     @Test
     public void set_turn_test() {
         CuT = new TicTacToeModel();
@@ -71,6 +80,9 @@ public class TicTacToeModelTest {
         assertEquals(mark_blank,CuT.getTurn());
     }
 
+    /**
+     * test for the getBoard method
+     */
     @Test
     public void get_board_test() {
         CuT = new TicTacToeModel();
@@ -107,6 +119,9 @@ public class TicTacToeModelTest {
         }
     }
 
+    /**
+     * test for the setTurn method
+     */
     @Test
     public void set_board_test() {
         CuT = new TicTacToeModel();
@@ -143,6 +158,9 @@ public class TicTacToeModelTest {
         }
     }
 
+    /**
+     * test for the newGame method
+     */
     @Test
     public void new_game_test() {
         CuT = new TicTacToeModel();
@@ -166,6 +184,9 @@ public class TicTacToeModelTest {
         }
     }
 
+    /**
+     * test for the makeMove method
+     */
     @Test
     public void make_move_test() {
         CuT = new TicTacToeModel();
@@ -257,6 +278,9 @@ public class TicTacToeModelTest {
         }
     }
 
+    /**
+     * test for the gameCompleted method
+     */
     @Test
     public void game_completed_test() {
         CuT = new TicTacToeModel();
@@ -312,6 +336,9 @@ public class TicTacToeModelTest {
         assertEquals(true,CuT.gameCompleted());
     }
 
+    /**
+     * test for the getWinner method
+     */
     @Test
     public void get_winner_test() {
         CuT = new TicTacToeModel();
@@ -367,6 +394,9 @@ public class TicTacToeModelTest {
         assertEquals(mark_blank,CuT.getWinner());
     }
 
+    /**
+     * test for the getWinPath method
+     */
     @Test
     public void get_win_path_test() {
         CuT = new TicTacToeModel();
@@ -419,5 +449,4 @@ public class TicTacToeModelTest {
         CuT.setBoard(board);
         assertEquals(8,CuT.getWinPath());
     }
-
 }

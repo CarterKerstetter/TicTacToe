@@ -1,16 +1,12 @@
 package carter.tictactoe;
-
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Unit test for the playerAI class
+ */
 public class PlayerAITest {
     private int row_top = 0;
     private int row_middle = 1;
@@ -39,11 +35,17 @@ public class PlayerAITest {
     private Thread thread;
     private int extra_check = 10;
 
+    /**
+     * Test for the constructor
+     */
     @Test
     public void constructor_test() {
         new PlayerAI(easy,mark_o,game);
     }
 
+    /**
+     * Test for cloneBoard method
+     */
     @Test
     public void clone_board_test() {
         CuT = new PlayerAI(easy, mark_x, game);
@@ -66,6 +68,9 @@ public class PlayerAITest {
         assertEquals(true, Arrays.deepEquals(board,test_board_1));
     }
 
+    /**
+     * test for oppositeMark method
+     */
     @Test
     public void opposite_mark_test() {
         game = new TicTacToeModel();
@@ -75,10 +80,9 @@ public class PlayerAITest {
         assertEquals(mark_blank, CuT.oppositeMark(mark_blank));
     }
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-
+    /**
+     * Test for the easy AI, also tests thread interruption
+     */
     @Test
     public void play_easy_test() {
         game = new TicTacToeModel();
@@ -94,6 +98,9 @@ public class PlayerAITest {
         }
     }
 
+    /**
+     * helper method for easy ai test, ran multiple times (since moves are slightly random)
+     */
     private void play_easy_test_helper() {
         game = new TicTacToeModel();
         //look for lose move
@@ -195,6 +202,9 @@ public class PlayerAITest {
         }
     }
 
+    /**
+     * test for the medium AI
+     */
     @Test
     public void play_medium_test() {
         //first turn lose
@@ -283,6 +293,9 @@ public class PlayerAITest {
         assertEquals(true, Arrays.deepEquals(board,test_board_1));
     }
 
+    /**
+     * helper method for hard ai test, ran multiple times (since moves are slightly random)
+     */
     @Test
     public void play_hard_test() {
         for(int i=0;i<extra_check;i++) {
@@ -345,5 +358,4 @@ public class PlayerAITest {
             game.notifyAll();
         }
     }
-
 }

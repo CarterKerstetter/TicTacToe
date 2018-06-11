@@ -112,7 +112,6 @@ public class PlayerAI implements Runnable{
                 if(nextMove.getRow() == -1) {
                     nextMove = loseMove(board, mark);
                 }
-                 * I don't think this is possible
                 if(nextMove.getRow() == -1) {
                     nextMove = winMove(board, mark);
                 }

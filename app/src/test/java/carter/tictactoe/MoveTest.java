@@ -1,11 +1,12 @@
 package carter.tictactoe;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import static org.junit.Assert.*;
 
+/**
+ * Unit test for the move class
+ */
 public class MoveTest {
     private int row = 3;
     private int col = 8;
@@ -13,6 +14,9 @@ public class MoveTest {
     private Coordinates coordinates;
     private Mark mark = Mark.X;
 
+    /**
+     * setup method
+     */
     @Before
     public void Setup() {
         coordinates = Mockito.mock(Coordinates.class);
@@ -21,13 +25,19 @@ public class MoveTest {
         CuT = new Move(coordinates, mark);
     }
 
+    /**
+     * test for the getCoordinates method
+     */
     @Test
     public void get_coordinates_test() {
-        Coordinates test_coords = CuT.getCoordinates();
-        assertEquals(row, test_coords.getRow());
-        assertEquals(col, test_coords.getCol());
+        coordinates = CuT.getCoordinates();
+        assertEquals(row, coordinates.getRow());
+        assertEquals(col, coordinates.getCol());
     }
 
+    /**
+     * test for the getMark method
+     */
     @Test
     public void get_mark_test() {
         Mark test_mark = CuT.getMark();
