@@ -61,6 +61,17 @@ public class TicTacToeModelTest {
     }
 
     @Test
+    public void set_turn_test() {
+        CuT = new TicTacToeModel();
+        CuT.setTurn(mark_x);
+        assertEquals(mark_x,CuT.getTurn());
+        CuT.setTurn(mark_o);
+        assertEquals(mark_o,CuT.getTurn());
+        CuT.setTurn(mark_blank);
+        assertEquals(mark_blank,CuT.getTurn());
+    }
+
+    @Test
     public void get_board_test() {
         CuT = new TicTacToeModel();
         board = new Mark[3][3];

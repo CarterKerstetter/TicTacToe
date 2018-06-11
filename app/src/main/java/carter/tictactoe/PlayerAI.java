@@ -36,7 +36,7 @@ public class PlayerAI implements Runnable{
                         game.wait();
                     }
                     catch(InterruptedException e) {
-                        e.printStackTrace();
+                        stopRunning();
                     }
                 }
             }
@@ -58,7 +58,7 @@ public class PlayerAI implements Runnable{
      * @param mark mark that will be reversed
      * @return X if O is given, O if X is given, BLANK if BLANK is given.
      */
-    private Mark oppositeMark(Mark mark) {
+    public Mark oppositeMark(Mark mark) {
         if(mark == Mark.X) {
             return Mark.O;
         }
@@ -86,9 +86,12 @@ public class PlayerAI implements Runnable{
                 if(nextMove.getRow() == -1) {
                     nextMove = tieMove(board, mark);
                 }
+                /**
+                 * I don't think this is possible
                 if(nextMove.getRow() == -1) {
                     nextMove = winMove(board, mark);
                 }
+                 **/
                 move = new Move(nextMove, mark);
                 game.makeMove(move);
                 break;
@@ -104,12 +107,16 @@ public class PlayerAI implements Runnable{
                 if(nextMove.getRow() == -1) {
                     nextMove = tieMove(board, mark);
                 }
+                /**
+                 * I don't think this is possible
                 if(nextMove.getRow() == -1) {
                     nextMove = loseMove(board, mark);
                 }
+                 * I don't think this is possible
                 if(nextMove.getRow() == -1) {
                     nextMove = winMove(board, mark);
                 }
+                 **/
                 move = new Move(nextMove, mark);
                 game.makeMove(move);
                 break;
@@ -130,7 +137,7 @@ public class PlayerAI implements Runnable{
      * @param board board to be cloned
      * @return clone of the board given
      */
-    private Mark[][] cloneBoard(Mark[][] board) {
+    protected Mark[][] cloneBoard(Mark[][] board) {
         Mark[][] clone = new Mark[TicTacToeModel.BOARD_SIZE][TicTacToeModel.BOARD_SIZE];
         for(int row = 0;row<TicTacToeModel.BOARD_SIZE;row++) {
             clone[row] = board[row].clone();
@@ -278,6 +285,7 @@ public class PlayerAI implements Runnable{
             int col = check%TicTacToeModel.BOARD_SIZE;
             return new Coordinates(row, col);
         }
+        //should never happen with the current AI
         else {
             return new Coordinates(-1, -1);
         }
@@ -345,7 +353,7 @@ public class PlayerAI implements Runnable{
                     clone = cloneBoard(board);
                     clone[row][col] = mark;
                     testGame.setBoard(clone);
-                    //if the game is complete and you lose, the move is a lose move
+                    //if the game is not complete and enemy will win, move is a lose move
                     if(!testGame.gameCompleted()) {
                         if(willWin(clone, oppositeMark(mark))) {
                             losses[row*TicTacToeModel.BOARD_SIZE+col] = true;
@@ -391,15 +399,19 @@ public class PlayerAI implements Runnable{
                     testGame.setBoard(clone);
                     //if the game ends and you win, you can win
                     if(testGame.gameCompleted()) {
-                        return testGame.getWinner() == mark;
+                        if(testGame.getWinner() == mark) {
+                            return true;
+                        }
                     }
                     //the game is not over, but the other player will lose, than you can make
                     //a winning move
-                    return willLose(clone, oppositeMark(mark));
+                    else if(willLose(clone, oppositeMark(mark))) {
+                        return true;
+                    }
                 }
             }
         }
-        return game.getWinner() == mark;
+        return false;
     }
 
     /**

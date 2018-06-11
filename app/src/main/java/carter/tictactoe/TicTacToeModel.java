@@ -113,6 +113,14 @@ public class TicTacToeModel {
     }
 
     /**
+     * setter for tohe turn
+     * @param turn turn to be set
+     */
+    public synchronized void setTurn(Mark turn) {
+        this.turn = turn;
+    }
+
+    /**
      * shows the winning path if one exists (expects there is only one)
      * @return an integer representing the winning path:
      * 0 = top row

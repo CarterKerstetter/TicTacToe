@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
  * Class used to open the about page.
  */
 public class About extends AppCompatActivity {
-    private MediaPlayer music;
+    protected MediaPlayer music;
 
     /**
      * Function used to create the about page
