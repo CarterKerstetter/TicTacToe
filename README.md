@@ -1,5 +1,5 @@
 # TicTacToe
-A game of tic tac toe for android phones. The game has an easy, medium, and hard AI to play against. All classes excluding AppCompatActivity classes have 100% code coverage with unit testing.
+A game of tic tac toe for android phones created by Carter Kerstetter. The game has an easy, medium, and hard AI to play against.
 
 TO RUN THE GAME ON AN ANDROID PHONE:
 
